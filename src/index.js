@@ -8,9 +8,17 @@ dotenv.config({
 import mongoose from 'mongoose';
 import { DB_NAME } from './constants.js';
 import connectDB from './db/index.js';
+import { app } from "./app.js";
 
 
 connectDB()
+.then(()=>{
+    app.listen(process.env.PORT || 8000)
+    console.log(`server s running zt port ${process.env.PORT}`)
+})
+.catch((err)=> {
+    console.log('error found!!', err)
+})
 
 
 /*   thru iffi directly connenting on index file
