@@ -2,6 +2,7 @@
   "name": "chaicodeproject",
   "version": "1.0.0",
   "description": "working on backend of a project with chai and code",
+  "type": "module",
   "keywords": [
     "chai",
     "backend",
@@ -9,9 +10,12 @@
   ],
   "license": "ISC",
   "author": "",
-  "type": "commonjs",
   "main": "index.js",
   "scripts": {
+    "dev" : "nodemon src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
   }
 }
