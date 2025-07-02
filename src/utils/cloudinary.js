@@ -10,20 +10,23 @@ import fs from "fs"
         api_secret: process.env.CLOUDINARY_API_SECRET // Click 'View API Keys' above to copy your API secret
     }) 
 
-const uploadOnCloud = async (localFilePath) => {
+const uploadOnCloudinary = async (localFilePath) => {
     try{
         if (!localFilePath) return null
         //uploading file
         const response = await cloudinary.uploader.upload(localFilePath, {
             resource_type : "auto"
         })
+        //file has been uploaded
+      
         console.log("file is uploaded on cloudinary", response.url);
+        return response;
     } catch(error){
         fs.unlinkSync(localFilePath) //remove the locally saved temp file as op failed
     }
 }
 
-export {uploadOnCloud}
+export {uploadOnCloudinary}
 
 
 
