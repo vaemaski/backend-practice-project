@@ -242,7 +242,7 @@ const changeCurrentPassword = asyncHandler( async (req, res) => {
 const getCurrentUser = asyncHandler( async (req, res) => {
     return res
     .status(200)
-    .json(200, req.user, "user fetched")
+    .json(new ApiResponse(200, req.user, "user fetched"))
 })
 
 const updateAccountDetails = asyncHandler(async (req, res) => {
@@ -252,7 +252,7 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
         throw new ApiError(400, "all fields are req!!")
     }
 
-    const user = User.findByIdAndUpdate(
+    const user = await User.findByIdAndUpdate(
         req.user?._id,
         {
             $set : {
@@ -305,25 +305,33 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
         throw new ApiError(400, "image file missing")
     }
 
+    const user = await User.findById(req.user?._id);
+    if (user.coverImage?.public_id) {
+        await cloudinary.uploader.destroy(user.coverImage.public_id);
+    }
+
     const coverImage = await uploadOnCloudinary(localCoverImagePath)
 
-    if(avatar.url){
+    if(!coverImage.url){
         throw new ApiError(400, "error while uploading image")
     }
 
-    const user  = await User.findByIdAndUpdate(
+    const updatedUser  = await User.findByIdAndUpdate(
         req.user?._id,
         {
             $set : {
-                coverImage: coverImage.url
+                coverImage: {
+                url: coverImage.url,
+                public_id: coverImage.public_id
+                }
             }
         },
         {new : true}
-    ).select("-password")
+    ).select("-password") 
 
     return res
     .status(200)
-    .json(new ApiResponse(200, user , "account  cover updated"))
+    .json(new ApiResponse(200, updatedUserser , "account  cover updated"))
 
 })
        
